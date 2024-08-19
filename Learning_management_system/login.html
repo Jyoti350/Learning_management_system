@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login page</title>
+    <link rel="stylesheet" href="validation.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Login form</h1>
+        <form id="login-form">
+            <div>
+                <label for="email">Email : </label>
+                <input type="text" id="email" name="email" placeholder="Enter your email">
+            </div>
+            <div>
+                <label for="password">Password : </label>
+                <input type="password" id="password" name="password" placeholder="Enter your password">
+            </div>
+
+            <div class="button">
+                <button type="submit" id="login" value="Submit">Login</button>
+            </div>
+
+            <div>
+                <h5><p>Have not registered yet ?  
+                    <a href="signUp.html">Register Now</a>
+                </h5>
+            </div>
+        </form>
+       
+    </div>
+</body>
+<script>
+    const Uemail = document.getElementById('email');
+    const Upassword = document.getElementById('password');
+
+    document.querySelector('form').addEventListener('submit', (e) => {
+        let email = Uemail.value;
+        let password = Upassword.value;
+       
+        e.preventDefault();
+        function validateEmail(email) {
+            if (email.trim() === '') {
+                alert('Enter correct email address')
+                return false;
+            }
+            return true;
+        }
+        function validatePassword(password) {
+           
+            if (password.trim() === '' || password.length < 8) {
+                alert('Enter correct password')
+                return false;
+            }
+            return true;
+        }
+        function removeInputFields() {
+            email = '';
+            password = '';
+        }
+
+        if (validateEmail(email) && validatePassword(password)) {
+            
+            let expire = new Date(new Date().getTime() + (2 * 60 * 60 * 1000));
+            console.log(expire);
+
+            let loginDetailsArray = JSON.parse(localStorage.getItem('User')) || [];
+            console.log(loginDetailsArray)
+            if (loginDetailsArray.length>0) {
+
+              let user =   loginDetailsArray.filter((loginObj)=>loginObj.email===email && loginObj.password===password)
+              
+              if(user.length > 0) {
+                document.cookie = `email=${email};  expires=${expire}`;
+                localStorage.setItem("userData", JSON.stringify(user[0]));
+                alert("Login successful!");
+                removeInputFields(); 
+                if (user[0].role ==='student') { 
+                    window.location.href = "student.html";
+                    return;
+
+                } else if (user[0].role === 'admin') {
+                    window.location.href = "admin.html";
+                    return;
+                }
+              }
+              else{
+                alert('Wrong email or password')
+              }
+            }
+            else{
+                alert('No User found')
+            }
+
+        }
+    });
+</script>
+
+</html>

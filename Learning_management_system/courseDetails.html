@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Details</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        max-width: 800px;
+        margin: 20px auto;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .heading {
+        display: flex;
+        justify-content: space-between;
+
+    }
+
+    .course-image {
+        width: 100%;
+        max-height: 300px;
+        object-fit: contain;
+        border-radius: 10px;
+        margin-bottom: 30px;
+
+    }
+
+    .course {
+        font-size: 20px;
+    }
+
+    h2 {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .line {
+        border: 1px solid black;
+    }
+
+    p {
+        font-size: 20px;
+        line-height: 1.5;
+    }
+
+    .study-link {
+
+        text-decoration: none;
+        font-size: 20px;
+        transition: background-color 0.3s ease;
+    }
+
+
+    .heading .action-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .action-buttons button {
+        padding: 5px;
+        color: #f4f4f4;
+        font-size: 20px;
+        border-radius: 5px;
+        background-color: red;
+        cursor: pointer;
+    }
+
+    .students-list {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+
+    }
+
+    .students-container h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .students-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .student-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .student-checkbox input[type="checkbox"] {
+        margin-top: 2px;
+    }
+
+    .student-checkbox label {
+        font-size: 20px;
+    }
+
+    .assign-button {
+        margin-top: 20px;
+        margin-left: auto;
+        padding: 8px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        background-color: green;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .assign-button:hover {
+        background-color: #3aa63a;
+    }
+
+    .student-checkbox {
+        margin-top: 18px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    label {
+        font-size: 20px;
+    }
+
+    .flex {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+</style>
+
+<body>
+    <div class="heading">
+        <h1>Course Details</h1>
+        <div class="action-buttons" id="deleteDiv"></div>
+    </div>
+
+    <div id="courseDetails"></div>
+
+
+    </div>
+
+    <div class="students-container">
+
+    </div>
+
+    <script>
+       window.onload = function () {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+
+    const selectedCourse = JSON.parse(localStorage.getItem('selectedCourse'));
+
+    const courseDetailsContainer = document.getElementById('courseDetails');
+    const courseDetailsHTML =
+        `<img src=${selectedCourse.image}></img>
+
+        <div class='line'></div>
+
+        <h2>Title : </h2><p class='course name'>${selectedCourse.name}</p>
+
+        <div class='line'></div>
+
+        <h2>Description : </h2><p class='course description'>${selectedCourse.description}</p>
+
+        <div class='line'></div>
+
+        <h2>Study URL : </h2>
+
+        <p class='course url'><a href=${selectedCourse.studyURL} class="study-link">For more knowledge</a><p>
+
+        <div class='line'></div>
+
+        <h2>Content : </h2><p class='course content'>Content: ${selectedCourse.content}</p>
+
+        <div class='line'></div>
+    `;
+    courseDetailsContainer.innerHTML = courseDetailsHTML;
+
+    if (userData.role === "admin") {
+        const deleteCourseBtn = document.createElement("button");
+        deleteCourseBtn.id = "deleteCourseBtn";
+        deleteCourseBtn.textContent = "Delete";
+        deleteCourseBtn.addEventListener('click', () => {
+            const storedCourses = JSON.parse(localStorage.getItem('courses')) || [];
+            const updatedCourse = storedCourses.filter(course => course.id !== selectedCourse.id);
+            localStorage.setItem('courses', JSON.stringify(updatedCourse));
+
+            const users = JSON.parse(localStorage.getItem('User'));
+
+            const usersWithAddedCourses = users.filter((item) => item.hasOwnProperty('addedCourses'));
+
+            usersWithAddedCourses.forEach((item) => {
+                let i = item.addedCourses.indexOf(selectedCourse.id);
+                if (i > -1) {
+                    item.addedCourses.splice(i, 1);
+                }
+            });
+
+            localStorage.setItem('User', JSON.stringify(users));
+
+            const courseCard = document.getElementById(selectedCourse.id);
+            if (courseCard) {
+                courseCard.remove();
+            }
+            alert(`${selectedCourse.name} course deleted`);
+            window.location.href = 'admin.html';
+        });
+
+        document.getElementById('deleteDiv').appendChild(deleteCourseBtn);
+
+        const student_container = document.getElementsByClassName('students-container')[0];
+
+        const heading = document.createElement('h2');
+        heading.textContent = "Course Assigned to: ";
+
+        const list = document.createElement('div');
+        list.classList.add('students-list');
+
+        student_container.appendChild(heading);
+        student_container.appendChild(list);
+
+        const assignbtn = document.createElement('button');
+        assignbtn.classList.add('assign-button');
+        assignbtn.textContent = "Assign";
+
+        student_container.appendChild(assignbtn);
+
+        let users = JSON.parse(localStorage.getItem("User"));
+
+        function isAssigned(user) {
+            return user.addedCourses && user.addedCourses.includes(selectedCourse.id);
+        }
+
+        const students = users.filter(user => user.role === "student");
+
+        students.forEach((user, index) => {
+            const div = document.createElement("div");
+            div.classList.add("flex");
+            div.innerHTML = `<input type="checkbox" id="student${index}" value="${user.email}" ${isAssigned(user) ? "checked" : ""}/>
+            <label for="student${index}">${user.userName}</label>`;
+            list.appendChild(div);
+        });
+
+        // Disable the "Assign" button if there are no students and change the background color
+        if (students.length === 0) {
+            assignbtn.disabled = true;
+            assignbtn.style.backgroundColor = 'grey';
+        }
+
+        assignbtn.addEventListener("click", () => {
+            const checkbox = document.querySelectorAll('input[type="checkbox"]');
+
+            checkbox.forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    const userIndex = users.findIndex((user) => user.email === checkbox.value);
+                    if (users[userIndex].addedCourses) {
+                        if (!users[userIndex].addedCourses.includes(selectedCourse.id)) {
+                            users[userIndex].addedCourses.push(selectedCourse.id);
+                        }
+                    } else {
+                        users[userIndex].addedCourses = [selectedCourse.id];
+                    }
+                } else {
+                    const userIndex = users.findIndex((user) => user.email === checkbox.value);
+                    if (users[userIndex].addedCourses) {
+                        const index = users[userIndex].addedCourses.indexOf(selectedCourse.id);
+                        if (index > -1) {
+                            users[userIndex].addedCourses.splice(index, 1);
+                        }
+                    }
+                }
+            });
+
+            localStorage.setItem("User", JSON.stringify(users));
+            alert('Course assigned successfully');
+            window.location.href = 'admin.html';
+        });
+    }
+};
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<!-- <style>
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+    }
+
+    .header {
+        padding: 12px 24px;
+        background-color: white;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header .image img {
+        width: auto;
+        max-height: 40px;
+        color: #4CAF50
+    }
+
+    .header .identity {
+        font-size: 20px;
+        color: rgb(51, 50, 50);
+        display:flex;
+        gap:5px;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    .main {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .container {
+        width: 80%;
+        margin-bottom: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .buttons {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .wrapper {
+        width: 80%;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap:wrap;
+    }
+
+    #courseList {
+
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .course-card {
+        width: 48%;
+        margin-bottom:20px;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .course-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .course-card img {
+        width: 100%;
+        height: 150px;
+        object-fit: contain;
+    }
+
+    .course-card h3 {
+        padding: 10px;
+        text-align: center;
+        font-size: 24px;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 80%;
+    }
+
+    .modal-content .close {
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .modal-content h2 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        text-align: center;
+    }
+
+    .modal-content form label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .modal-content form input[type="text"],
+    .modal-content form textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    .modal-content form button[type="submit"] {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    .modal-content form button[type="submit"]:hover {
+        background-color: #45a049;
+    }
+  
+</style> -->
+
+<body>
+    <div class="header">
+        <div class="image"><img src="images/logo.png" alt="Logo"></div>
+        <div class="identity">
+            <h3>Admin | </h3>
+            <h3 id="userName"></h3>
+        </div>
+        <button id="logoutBtn">Logout</button>
+    </div>
+    <div class="main">
+        <div class="container">
+            <h2>Manage Courses</h2>
+            <div class="buttons">
+                <button id="addCourseBtn">Add Course</button>
+            </div>
+        </div>
+        <div class="wrapper">
+            <div id="courseList"></div>
+        </div>
+    </div>
+  
+    <div id="addCourseModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Course</h2>
+            <form id="addCourseForm">
+                <label for="courseImage">Course Image URL:</label><br>
+                <input type="text" id="courseImage" required><br>
+                <label for="courseName">Course Name:</label><br>
+                <input type="text" id="courseName" required><br>
+                <label for="courseDescription">Course Description:</label><br>
+                <textarea id="courseDescription" required></textarea><br>
+                <label for="studyURL">Study URL:</label><br>
+                <input type="text" id="studyURL" required><br>
+                <label for="courseContent">Course Content:</label><br>
+                <textarea id="courseContent" required></textarea><br>
+                <button type="submit">Add Course</button>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+     
+        const logoutBtn = document.getElementById('logoutBtn');
+        const addCourseBtn = document.getElementById('addCourseBtn');
+        const addCourseModal = document.getElementById('addCourseModal');
+        const addCourseForm = document.getElementById('addCourseForm');
+        const courseList = document.getElementById('courseList');
+        
+        const userNameTag = document.getElementById('userName');
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        userNameTag.innerHTML = userData.userName;
+
+        logoutBtn.addEventListener('click', () => {
+            window.location.href = 'login.html';
+        });
+
+        addCourseBtn.addEventListener('click', () => {
+            addCourseModal.style.display = 'block';
+        });
+
+        document.querySelector('.close').addEventListener('click', () => {
+            addCourseModal.style.display = 'none';
+        });
+
+        function removeInputFields() {
+            courseImage = '';
+            courseName = '';
+            courseDescription = '';
+            courseContent = '';
+            studyURL = '';
+        }
+        
+        addCourseForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const courseImage = document.getElementById('courseImage').value;
+            const courseName = document.getElementById('courseName').value;
+            const courseDescription = document.getElementById('courseDescription').value;
+            const studyURL = document.getElementById('studyURL').value;
+            const courseContent = document.getElementById('courseContent').value;
+
+            const storedCourseData = JSON.parse(localStorage.getItem('courses')) || [];
+            const existingCourse = storedCourseData.find(course => course.name === courseName);
+            console.log(existingCourse);
+
+            if (existingCourse) {
+                alert('Course already exists');
+                return;
+            }
+            const newCourse = {
+                id: Date.now(),
+                image: courseImage,
+                name: courseName,
+                description: courseDescription,
+                studyURL: studyURL,
+                content: courseContent,
+
+            };
+
+            storedCourseData.push(newCourse);
+            localStorage.setItem('courses', JSON.stringify(storedCourseData));
+            addCourseModal.style.display = 'none';
+            displayCourses();
+            removeInputFields();
+        });
+
+        removeInputFields();
+        
+        function displayCourses() {
+            courseList.innerHTML = '';
+            const courses = JSON.parse(localStorage.getItem('courses')) || [];
+            courses.forEach(course => {
+                const card = createCourseCard(course);
+                courseList.appendChild(card);
+            });
+        }
+
+        function handleCourseClick(course) {
+            localStorage.setItem('selectedCourse', JSON.stringify(course));
+            window.location.href = 'courseDetails.html';
+        }
+
+        function createCourseCard(course) {
+            const card = document.createElement('div');
+            card.classList.add('course-card');
+            const courseImageElement = document.createElement('img');
+            courseImageElement.src = course.image; 
+            courseImageElement.alt = course.name; 
+            card.appendChild(courseImageElement);
+            const courseNameElement = document.createElement('h3');
+            courseNameElement.textContent = course.name;
+            card.appendChild(courseNameElement);
+            card.addEventListener('click', function () {
+                handleCourseClick(course);
+            });
+
+            return card;
+        }
+
+        displayCourses();
+
+    </script>
+
+</html>

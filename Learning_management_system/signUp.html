@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up page</title>
+    <link rel="stylesheet" href="validation.css">
+</head>
+
+<body>
+    <div class="container">
+
+    <div>
+        <form id="sign-up-form">
+            <h1>SignUp page</h1>
+            <div>
+                <div>
+                    <label for="userName">UserName : </label>
+                    <input type="text" id="userName" name="userName" placeholder="Enter your user name " required>
+                </div>
+                <div>
+                    <label for="email">Email : </label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div>
+                    <label for="password">Password : </label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <div>
+                    <label for="confirm-password">Confirm Password : </label>
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+                </div>
+
+                <div>
+                    <label for="role">Job Type : </label>
+                    <select id="role" name="myRole" required>
+                        <option value="">Select role Type</option>
+                        <option value="student">Student</option>
+                        <option value="admin">Admin</option>
+                        
+                    </select>
+                </div>
+
+                <div class="button">
+                    <button type="submit" id="signup">SignUp</button>  
+                </div>
+
+                <div>
+                    <h5>Already has an existing account? 
+                        <a href="login.html">Login</a>
+                    </h5>
+                </div>
+            </div>
+        </form>
+      
+    </div>
+</body>
+<script>
+    const form = document.getElementById('sign-up-form');
+    const Uname = document.getElementById('userName');
+    const Uemail = document.getElementById('email');
+    const Upassword = document.getElementById('password');
+    const Uconfirm_Password = document.getElementById('confirm-password');
+    const Urole = document.getElementById('role');
+
+    document.querySelector('form').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        let userName = Uname.value;
+        let email = Uemail.value;
+        let password = Upassword.value;
+        let confirm_Password = Uconfirm_Password.value;
+        let role = Urole.value;
+
+        console.log(userName, email, password, confirm_Password, role);
+
+        function validateUserName(userName) {
+            if (userName.trim() === '') {
+                alert('Enter correct user name')
+                return false;
+            }
+            return true;
+        }
+        function validateEmail(email) {
+            if (email.trim()==='') {
+                alert('Enter correct email address')
+                return false;
+            }
+            return true;
+        }
+
+        function validatePassword(password, confirm_Password) {
+           if (password.trim()==='' && password.length < 8)  {
+                alert('Enter correct password')
+                return false;
+            }if(password!==confirm_Password) {
+                alert('Passwords do not match')
+                return false;
+            }
+            return true;
+        }
+
+        function removeInputFields(){
+            userName = '';
+            email = '';
+            password = '';
+            confirm_Password = '';
+            role = '';
+        }
+
+        if (validateUserName(userName) && validateEmail(email) && validatePassword(password, confirm_Password)) {
+            const storedFormData = JSON.parse(localStorage.getItem('User')) || [];
+            const existingUser = storedFormData.find(user => user.email === email);
+            console.log(existingUser);
+            if(existingUser){
+                alert('Email already exists');
+                return;
+            }
+            let user = {userName: userName, email: email, password: password, role: role};
+         
+            storedFormData.push(user);
+
+            localStorage.setItem('User', JSON.stringify(storedFormData));
+            alert('Registered successfully');
+            
+            window.location.href = "login.html";
+            removeInputFields();
+        }
+    });
+</script>
+</html>

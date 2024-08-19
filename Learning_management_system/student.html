@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<!-- <style>
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+    }
+
+    .header {
+        padding: 12px 24px;
+        background-color: white;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header .image img {
+        width: auto;
+        max-height: 40px;
+        color: #4CAF50
+    }
+
+    .header .identity {
+        display: flex;
+        font-size: 20px;
+        color: rgb(51, 50, 50);
+        gap:5px;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    .main {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .container {
+        width: 80%;
+        margin-bottom: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .buttons {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+
+    .wrapper {
+        width: 80%;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    #courseList {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .course-card {
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .course-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .course-card img {
+        width: 100%;
+        height: 150px;
+        object-fit: contain;
+    }
+
+    .course-card h3 {
+        padding: 10px;
+        text-align: center;
+        font-size: 24px;
+    }
+</style> -->
+
+<body>
+    <div class="header">
+        <div class="image"><img src="images/logo.png" alt="Logo"></div>
+        <div class="identity">
+            <h3>Student | </h3>
+            <h3 id="userName"></h3>
+        </div>
+        <button id="logoutBtn">Logout</button>
+    </div>
+    <div class="main">
+        <div class="container">
+            <h2>Assigned Courses</h2>
+        </div>
+        <div class="wrapper">
+            <div id="courseList"></div>
+        </div>
+    </div>
+</body>
+<script>
+    window.onload = function () {
+        displayCourses();
+
+    };
+    logoutBtn.addEventListener('click', () => {
+        window.location.href = 'login.html';
+    });
+
+    const userNameTag = document.getElementById('userName');
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    userNameTag.innerHTML = userData.userName;
+
+    function displayCourses() {
+        const courseList = document.getElementById('courseList');
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        if (userData.addedCourses) {
+            let courses = JSON.parse(localStorage.getItem('courses'));
+            courses.forEach(course => {
+                if (userData.addedCourses.includes(course.id)) {
+                    const card = createCourseCard(course);
+                    courseList.appendChild(card);
+                }
+            })
+        } else {
+            courseList.textContent = "No course found";
+        }
+    }
+
+    function handleCourseClick(course) {
+        localStorage.setItem('selectedCourse', JSON.stringify(course));
+        window.location.href = 'courseDetails.html';
+    }
+
+    function createCourseCard(course) {
+        const card = document.createElement('div');
+        card.classList.add('course-card');
+        const courseImageElement = document.createElement('img');
+        courseImageElement.src = course.image; // Set the image source
+        courseImageElement.alt = course.name; // Set alternative text for accessibility
+        card.appendChild(courseImageElement);
+        const courseNameElement = document.createElement('h3');
+        courseNameElement.textContent = course.name;
+        card.appendChild(courseNameElement);
+        card.addEventListener('click', function () {
+            handleCourseClick(course);
+        });
+
+        return card;
+    }
+
+
+
+</script>
+
+</html>
